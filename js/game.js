@@ -1,6 +1,8 @@
-const game={
-  canvas:null,
-  ctx:null,
+let game = {
+  canvas: null,
+  ctx: null,
+  field: null,
+  character: null,
   width: 0,
   height: 0,
   score: document.getElementById('score'),
@@ -100,17 +102,23 @@ const game={
     this.create();
     this.update();
   },
-  create(){},
-  update(){
+  create() {
+    // this.field.create();
+    // this.ctx.strokeStyle='#7757b171';
+    // this.ctx.strokeRect(100,100, 500,500);
+  },
+  update() {
     this.render();
   },
-  render(){
-        // отрисовка элементов на canvas
-        window.requestAnimationFrame(() => {
-          this.ctx.clearRect(0, 0, this.width, this.height);
-          this.ctx.drawImage(this.sprites.background, 0, 0);
-          // this.ctx.fillText('Score: ' + this.score, 10.45, 30.25);
-        });
+  render() {
+    // отрисовка элементов на canvas
+    window.requestAnimationFrame(() => {
+      // this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.drawImage(this.sprites.background, 0, 0);
+      this.ctx.fillStyle = '#7757b171';
+      this.ctx.fillRect(150.5, 1.5, 300, 250);
+      // this.ctx.fillText('Score: ' + this.score, 10.45, 30.25);
+    });
   }
 }
 
