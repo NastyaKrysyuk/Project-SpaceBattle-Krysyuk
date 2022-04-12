@@ -22,7 +22,8 @@ let game = {
     shot: null,
     live: null,
     bonus: null,
-    asteroid: null
+    asteroid: null,
+    cell:null,
   },
   start() {
     this.init();
@@ -103,7 +104,7 @@ let game = {
     this.update();
   },
   create() {
-    // this.field.create();
+    this.field.create();
     // this.ctx.strokeStyle='#7757b171';
     // this.ctx.strokeRect(100,100, 500,500);
   },
@@ -113,10 +114,12 @@ let game = {
   render() {
     // отрисовка элементов на canvas
     window.requestAnimationFrame(() => {
-      // this.ctx.clearRect(0, 0, this.width, this.height);
+      // this.field.create();
+      this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.sprites.background, 0, 0);
-      this.ctx.fillStyle = '#7757b171';
-      this.ctx.fillRect(150.5, 1.5, 300, 250);
+      this.field.render();
+      // this.ctx.fillStyle = '#7757b171';
+      // this.ctx.fillRect(150.5, 1.5, 300, 250);
       // this.ctx.fillText('Score: ' + this.score, 10.45, 30.25);
     });
   }
