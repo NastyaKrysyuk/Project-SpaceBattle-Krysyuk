@@ -101,12 +101,18 @@ let game = {
     // запуск игры
     console.log('запуск игры');
     this.create();
-    this.update();
+
+    this.gameInterval = setInterval(() => {
+      this.update();
+    }, 150);
+
+    this.asterInterval = setInterval(() => {
+        this.field.createAsteroid();
+    }, 3000);
   },
   create() {
     this.field.create();
-    // this.ctx.strokeStyle='#7757b171';
-    // this.ctx.strokeRect(100,100, 500,500);
+    this.field.createAsteroid();
   },
   update() {
     this.render();
@@ -114,13 +120,9 @@ let game = {
   render() {
     // отрисовка элементов на canvas
     window.requestAnimationFrame(() => {
-      // this.field.create();
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.sprites.background, 0, 0);
       this.field.render();
-      // this.ctx.fillStyle = '#7757b171';
-      // this.ctx.fillRect(150.5, 1.5, 300, 250);
-      // this.ctx.fillText('Score: ' + this.score, 10.45, 30.25);
     });
   }
 }
