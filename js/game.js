@@ -104,11 +104,11 @@ let game = {
 
     this.gameInterval = setInterval(() => {
       this.update();
-    }, 150);
+    }, 50);
 
     this.asterInterval = setInterval(() => {
         this.field.createAsteroid();
-    }, 3000);
+    }, 500);
   },
   create() {
     this.field.create();
@@ -122,7 +122,10 @@ let game = {
     window.requestAnimationFrame(() => {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.sprites.background, 0, 0);
+      
       this.field.render();
+      this.field.updateAsteroid();
+      this.character.create();
     });
   }
 }
