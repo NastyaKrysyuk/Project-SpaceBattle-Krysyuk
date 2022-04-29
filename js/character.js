@@ -1,13 +1,18 @@
-game.character={
-  game:game,
-  X:0,
-  Y:0,
-  create(){
-console.log(game.width)
-var img=new Image();
- img.src="C:\project-gameSB\Project-SpaceBattle-Krysyuk\img\asteroid_svg.svg"
-this.X=game.width/2,
-this.Y=game.height/2,
-    this.game.ctx.drawImage(img, this.X, this.Y,50,50);
+game.character = {
+  game: game,
+  X: 0,
+  Y: 0,
+  init(){
+    this.game.canvas.addEventListener("mousemove", function (event) {
+      console.log(event)
+      this.X = event.offsetX - 25;
+      this.Y = event.offsetY - 13;
+    });
+    
+ },
+  create() {
+  
+  this.game.ctx.drawImage(this.game.sprites.character, this.X, this.Y, 40, 40);   
   }
+
 }

@@ -4,14 +4,20 @@
 }
 
 body {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  color: white;
+  font-family: fantasy;
 }
 
 /*animation svg*/
-svg {
+object {
+  width: 512px;
+  height: 350px;
   animation: pulsing 2s infinite;
   transform: translateZ(0);
 }
@@ -75,9 +81,8 @@ svg {
   text-align: center;
   transition: all 1s ease;
 }
-.main-nav__items li a {
+.main-nav__items li a,a {
   color: white;
-  font-family: fantasy;
   text-align: center;
   font-size: 2.2em;
   line-height: 1.4em;
@@ -86,6 +91,7 @@ svg {
   background-color: #7757b171;
   padding: 0.2em;
   text-decoration: none;
+  cursor: pointer;
   
 }
 

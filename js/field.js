@@ -9,7 +9,7 @@ game.field = {
   create() {
     this.createCells();
   },
-  
+
   createCells() {
     for (let row = 0; row < this.height; row++) {
       for (let col = 0; col < this.width; col++) {
@@ -32,20 +32,21 @@ game.field = {
     };
   },
 
-  createAsteroid() {
+  createObject(typeObj, obj) {
     this.aster.push({
-      x: Math.floor(Math.random() * ((this.offsetX + this.game.sprites.cell.width*this.width-this.game.sprites.asteroid.width) - this.offsetX) + this.offsetX),
-      y:this.offsetY,
-      dx:1,
-      dy:3
+      x: Math.floor(Math.random() * ((this.offsetX + this.game.sprites.cell.width * this.width - obj.width) - this.offsetX) + this.offsetX),
+      y: this.offsetY,
+      dx: 1,
+      dy: 3,
+      type: typeObj
     });
   },
 
-  updateAsteroid(){
-    for(var i in this.aster){
-        this.aster[i].y+=this.aster[i].dy;
-     if(this.aster[i].y>=this.offsetY+this.height* this.game.sprites.cell.height-50){
-      this.aster.splice(i,1)
+  updateObject() {
+    for (var i in this.aster) {
+      this.aster[i].y += this.aster[i].dy;
+      if (this.aster[i].y >= this.offsetY + this.height * this.game.sprites.cell.height - 50) {
+        this.aster.splice(i, 1)
       }
     }
   },
@@ -54,7 +55,14 @@ game.field = {
     this.cells.forEach((cell) => {
       this.game.ctx.drawImage(this.game.sprites.cell, cell.x, cell.y);
     });
-    for(var i in this.aster){this.game.ctx.drawImage(this.game.sprites.asteroid, this.aster[i].x,  this.aster[i].y,30,30);}
-     
+    for (var i in this.aster) {
+      if (this.aster[i].type === "asteroid") {
+        this.game.ctx.drawImage(this.game.sprites.asteroid, this.aster[i].x, this.aster[i].y, 30, 30);
+      } else {
+        this.game.ctx.drawImage(this.game.sprites.bonus, this.aster[i].x, this.aster[i].y, 30, 30);
+      }
+
+    }
+
   }
 };

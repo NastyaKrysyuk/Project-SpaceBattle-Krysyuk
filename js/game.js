@@ -1,3 +1,4 @@
+
 let game = {
   canvas: null,
   ctx: null,
@@ -23,8 +24,9 @@ let game = {
     live: null,
     bonus: null,
     asteroid: null,
-    cell:null,
+    cell: null,
   },
+
   start() {
     this.init();
     // function () {} ---- () => {}
@@ -34,6 +36,7 @@ let game = {
   },
   init() {
     this.canvas = document.getElementById('mycanvas');
+    console.log(this.canvas)
     this.ctx = this.canvas.getContext('2d');
     this.initDimensions();
     this.setTextFont();
@@ -107,24 +110,28 @@ let game = {
     }, 50);
 
     this.asterInterval = setInterval(() => {
-        this.field.createAsteroid();
+      this.field.createObject('asteroid', this.sprites.asteroid);
     }, 500);
+
+    this.bonusInterval = setInterval(() => {
+      this.field.createObject('bonus', this.sprites.bonus);
+    }, 5000);
   },
   create() {
     this.field.create();
-    this.field.createAsteroid();
+    this.field.createObject('asteroid', this.sprites.asteroid);
+   this.character.init()
   },
   update() {
     this.render();
+    this.field.updateObject();
   },
   render() {
     // отрисовка элементов на canvas
     window.requestAnimationFrame(() => {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.sprites.background, 0, 0);
-      
       this.field.render();
-      this.field.updateAsteroid();
       this.character.create();
     });
   }
