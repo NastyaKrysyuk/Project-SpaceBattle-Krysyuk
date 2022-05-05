@@ -65,6 +65,7 @@ function createGamePage() {
   wrapper.style.height="100%"
   wrapper.appendChild(canvas);
   wrapper.appendChild(createScore())
+  wrapper.appendChild(createLives("lives"))
 }
 
 function createScore() {
@@ -75,6 +76,17 @@ function createScore() {
   span.id = "score";
   score.appendChild(span);
   return score;
+}
+
+function createLives(className){
+  let lives=document.createElement("div")
+  lives.className=className;
+for (let i=1; i<=3;i++){
+  let img=document.createElement('img');
+  img.src="img/live.png";
+  lives.appendChild(img)
+}
+return lives;
 }
 
 

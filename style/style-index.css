@@ -1,8 +1,10 @@
-    body {
+    .game-body {
+      display: block;
       background-color: #d0f9ff;
       text-align: center;
       margin: 0;
       padding: 0;
+    
     }
     canvas {
       position: absolute;
@@ -37,5 +39,4 @@
     .lives img{
       width: 20%;
       margin:0 10px;
-      /* height: 60px; */
     }

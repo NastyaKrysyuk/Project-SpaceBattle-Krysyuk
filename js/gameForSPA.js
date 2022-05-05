@@ -10,12 +10,15 @@ wrapper.appendChild(canvas);
 wrapper.appendChild(createScore())
 }
 
-// function createLives(){
-// for (let i; i<=3;i++){
-//   let img=document.createElement('img');
-//   img.src="./img/live.png";
-// }
-// }
+function createLives(){
+  let lives=document.createElement("div")
+  lives.className=className;
+for (let i; i<=3;i++){
+  let img=document.createElement('img');
+  img.src="./img/live.png";
+  lives.appendChild(img)
+}
+}
 
 function createScore(){
 let score=document.createElement('div');

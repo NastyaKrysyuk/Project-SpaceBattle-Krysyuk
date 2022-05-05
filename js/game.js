@@ -25,6 +25,7 @@ let game = {
     bonus: null,
     asteroid: null,
     cell: null,
+    explosion: null,
   },
 
   start() {
@@ -111,20 +112,27 @@ let game = {
 
     this.asterInterval = setInterval(() => {
       this.field.createObject('asteroid', this.sprites.asteroid);
-    }, 500);
+      this.character.createFire();
+    }, 200);
 
     this.bonusInterval = setInterval(() => {
-      this.field.createObject('bonus', this.sprites.bonus);
-    }, 5000);
+      const cuntLives = document.querySelector('.lives').childElementCount;
+      if (cuntLives < 3 && cuntLives > 0) {
+        this.field.createObject('bonus', this.sprites.bonus);
+      }
+    }, 8000);
   },
   create() {
     this.field.create();
     this.field.createObject('asteroid', this.sprites.asteroid);
-   this.character.init()
+    this.character.createFire();
+
+    //  this.character.init()
   },
   update() {
     this.render();
     this.field.updateObject();
+    this.character.updateFire();
   },
   render() {
     // отрисовка элементов на canvas
@@ -140,3 +148,4 @@ let game = {
 window.addEventListener('load', () => {
   game.start();
 });
+
