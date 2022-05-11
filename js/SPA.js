@@ -37,6 +37,7 @@ function switchToState(state) {
 }
 function switchToGame() {
   switchToState({ page: 'Game' });
+  document.location.reload();
 }
 function switchToMain() {
   switchToState({ page: 'Main' });
@@ -52,6 +53,16 @@ function switchToRules() {
 }
 function switchToRecords() {
   switchToState({ page: 'Records' });
+}
+
+function saveSelection(){
+  var selection=document.getElementsByTagName('input');
+  for(var i=0; i<=selection.length; i++){
+    if(selection[i].checked==true){
+      var value=selection[i].value;
+      localStorage.setItem("key",value)
+    }
+  }
 }
 
 renderNewState();
@@ -73,6 +84,7 @@ function createScore() {
   score.className = "score";
   score.textContent = "Score:";
   let span = document.createElement('span');
+  span.textContent='0';
   span.id = "score";
   score.appendChild(span);
   return score;
@@ -154,17 +166,19 @@ function createContainer(classNameContainer, classNameTitle, caption, callback, 
   container.appendChild(title);
   container.appendChild(callback(argsCollback));
   container.appendChild(createButtonOK("OK", switchToMain));
+  container.appendChild(createButtonOK("SAVE", saveSelection));
   return container;
 }
 
 function createFormHero() {
   let form = document.createElement('form');
-  form.appendChild(createInput("character1", "character", "character1", true));
+  form.name="myform"
+  form.appendChild(createInput("character1", "character", "character", true));
   form.appendChild(createLabel("character1", "img/character.png"));
-  form.appendChild(createInput("character2", "character", "character2", false));
-  form.appendChild(createLabel("character2", "img/character/alien-stare.png"));
-  form.appendChild(createInput("character3", "character", "character3", false));
-  form.appendChild(createLabel("character3", "img/character1.png"));
+  form.appendChild(createInput("character2", "character", "character1", false));
+  form.appendChild(createLabel("character2", "img/character1.png"));
+  form.appendChild(createInput("character3", "character", "character2", false));
+  form.appendChild(createLabel("character3", "img/character2.png"));
   return form;
 }
 
@@ -188,12 +202,20 @@ function createLabel(htmlFor, imgSrc, className) {
   return label;
 }
 
-function createButtonOK(caption, hashChange) {
+function createButtonOK(caption, callback) {
   let buttonOK = document.createElement('a');
   buttonOK.textContent = caption;
-  buttonOK.onclick = hashChange;
+  buttonOK.onclick = callback;
   return buttonOK;
 }
+
+
+// function createButtonSave(caption, hashChange) {
+//   let buttonOK = document.createElement('a');
+//   buttonOK.textContent = caption;
+//   buttonOK.onclick = hashChange;
+//   return buttonOK;
+// }
 
 //CHOOSE BACKGROUND________________________________________
 
@@ -206,6 +228,8 @@ function createChooseBackgroundPage() {
 
 function createFormBackground() {
   let form = document.createElement('form');
+  form.name="myform"
+  
   form.appendChild(createInput("background1", "background", "background1", true));
   form.appendChild(createLabel("background1", "img/background/background1.jpg", "background-img"));
   form.appendChild(createInput("background2", "background", "background2", false));

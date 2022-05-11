@@ -1,6 +1,6 @@
 game.field = {
   game: game,
-  height: 18,
+  height: 16,
   width: 14,
   offsetX: 0,
   offsetY: 0,
@@ -35,7 +35,7 @@ game.field = {
 
   createObject(typeObj, obj) {
     this.aster.push({
-      x: Math.floor(Math.random() * ((this.offsetX + this.game.sprites.cell.width * this.width - obj.width) ) + this.offsetX),
+      x: Math.floor(this.offsetX + Math.random() * ((this.offsetX + this.width * this.game.sprites.cell.width)-this.game.sprites.asteroid.width/2 + 1 - this.offsetX)),
       y: this.offsetY,
       angle: 0,
       dxangle: Math.random() * 0.2 - 0.1,
@@ -53,6 +53,18 @@ game.field = {
       obj1H / 4 + obj1Y > obj2Y
   },
 
+  deleteObject(objNum1, objNum2) {
+    this.expl.push({
+      x: this.aster[objNum1].x,
+      y: this.aster[objNum1].y,
+      animx: 0,
+      animy: 0
+    });
+    this.aster[objNum1].del = 1;
+    this.game.character.fire.splice(objNum2, 1);
+    // break;
+  },
+
   updateObject() {
     for (var i in this.aster) {
 
@@ -64,6 +76,12 @@ game.field = {
         if (this.aster[i].type === "asteroid") {
           //минус жизнь
           document.querySelector('.lives').firstChild.remove();
+          //конец игры(сохранять счёт)
+          if (document.querySelector('.lives').childElementCount == 0) {
+            alert('gameover')
+            game.started=false;
+            document.location.reload();
+          }
         }
         this.aster.splice(i, 1)
       }
@@ -71,19 +89,26 @@ game.field = {
         this.aster[i].dx = -this.aster[i].dx;
       }
 
+
       for (var j in this.game.character.fire) {
-        if (this.collides(this.game.character.fire[j].x, this.game.character.fire[j].y, this.aster[i].x, this.aster[i].y, this.game.sprites.shot.height, this.game.sprites.shot.width, this.game.sprites.asteroid.height, this.game.sprites.asteroid.width) && this.aster[i].type === "asteroid") {
-          console.log('boom');
-          this.expl.push({
-            x: this.aster[i].x,
-            y: this.aster[i].y,
-            animx: 0,
-            animy: 0
-          });
-          this.aster[i].del = 1;
-          this.game.character.fire.splice(j, 1); break;
+        if (this.collides(this.game.character.fire[j].x, this.game.character.fire[j].y, this.aster[i].x, this.aster[i].y, this.game.sprites.shot.height, this.game.sprites.shot.width, this.game.sprites.asteroid.height, this.game.sprites.asteroid.width)) {
+
+          //столкновение астероид+пуля
+          if (this.aster[i].type === "asteroid") {
+            var score = this.game.score++;
+            document.getElementById('score').textContent = score;
+            this.deleteObject(i, j);
+
+            //столкновение жизнь+пуля
+          } else if (this.aster[i].type === "bonus") {
+            this.deleteObject(i, j);
+            //добавляем жизнь
+            var container = document.querySelector('.lives');
+            var addLife=document.createElement('img');
+            addLife.src="img/live.png";
+            container.appendChild(addLife);
+          }
         }
-        
       }
       if (this.aster[i].del == 1) this.aster.splice(i, 1);
     }
@@ -103,7 +128,6 @@ game.field = {
     });
     for (var i in this.aster) {
       if (this.aster[i].type === "asteroid") {
-        // this.game.ctx.drawImage(this.game.sprites.asteroid, this.aster[i].x, this.aster[i].y, 30, 30);
         this.game.ctx.save();
         this.game.ctx.translate(this.aster[i].x + 25, this.aster[i].y + 25);
         this.game.ctx.rotate(this.aster[i].angle);

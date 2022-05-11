@@ -1,12 +1,12 @@
-
 let game = {
+  started: false,
   canvas: null,
   ctx: null,
   field: null,
   character: null,
   width: 0,
   height: 0,
-  score: document.getElementById('score'),
+  score: 0,
   dimensions: {
     max: {
       width: 640,
@@ -18,8 +18,10 @@ let game = {
     }
   },
   sprites: {
+    character:null,
+    character1:null,
+    character2:null,
     background: null,
-    character: null,
     shot: null,
     live: null,
     bonus: null,
@@ -30,7 +32,6 @@ let game = {
 
   start() {
     this.init();
-    // function () {} ---- () => {}
     this.preload(() => {
       this.run();
     });
@@ -41,6 +42,7 @@ let game = {
     this.ctx = this.canvas.getContext('2d');
     this.initDimensions();
     this.setTextFont();
+
   },
   setTextFont() {
     this.ctx.font = '38px monospace';
@@ -105,6 +107,8 @@ let game = {
     // запуск игры
     console.log('запуск игры');
     this.create();
+    this.character.init()
+    
 
     this.gameInterval = setInterval(() => {
       this.update();
@@ -112,12 +116,15 @@ let game = {
 
     this.asterInterval = setInterval(() => {
       this.field.createObject('asteroid', this.sprites.asteroid);
+    }, 500);
+
+    this.fireInterval = setInterval(() => {
       this.character.createFire();
-    }, 200);
+    }, 400);
 
     this.bonusInterval = setInterval(() => {
-      const cuntLives = document.querySelector('.lives').childElementCount;
-      if (cuntLives < 3 && cuntLives > 0) {
+      const countLives = document.querySelector('.lives').childElementCount;
+      if (countLives < 3 && countLives > 0) {
         this.field.createObject('bonus', this.sprites.bonus);
       }
     }, 8000);
@@ -127,6 +134,9 @@ let game = {
     this.field.createObject('asteroid', this.sprites.asteroid);
     this.character.createFire();
 
+    window.addEventListener('mousemove', (event) => {
+      this.character.start(event.offsetX);
+    });
     //  this.character.init()
   },
   update() {

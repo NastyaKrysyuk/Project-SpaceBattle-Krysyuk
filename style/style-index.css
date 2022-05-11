@@ -1,5 +1,4 @@
-    .game-body {
-      display: block;
+    body {
       background-color: #d0f9ff;
       text-align: center;
       margin: 0;
@@ -20,7 +19,7 @@
     width: 15%;
     color: #ffffff;
     position: absolute;
-    font-size: 3em;
+    font-size: 2vw;
     font-family: fantasy;
     border: 1px solid;
     border-radius: 21px;
@@ -28,13 +27,14 @@
     background-color: #ffffff75;
     padding: 12px;
     vertical-align: middle;
+    right: 0;
     }
 
     .lives{
       display: flex;
       justify-content: center;
       align-items: center;
-      right: 0;
+      left: 0;
     }
     .lives img{
       width: 20%;
