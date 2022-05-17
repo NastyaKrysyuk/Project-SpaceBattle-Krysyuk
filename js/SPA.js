@@ -1,3 +1,4 @@
+const wrapper = document.getElementById("wrapper");
 window.onhashchange = renderNewState;
 function renderNewState() {
   const hash = window.location.hash;
@@ -66,7 +67,10 @@ function saveSelection(){
 }
 
 renderNewState();
-
+function createBackgroundApp(){
+  wrapper.appendChild(createBackground("stars"));
+  wrapper.appendChild(createBackground("twinkling"));
+}
 //GAME_________________________________________________________________________________________
 function createGamePage() {
   let wrapper = document.getElementById('wrapper');
@@ -95,7 +99,7 @@ function createLives(className){
   lives.className=className;
 for (let i=1; i<=3;i++){
   let img=document.createElement('img');
-  img.src="img/live.png";
+  img.src="img/life.png";
   lives.appendChild(img)
 }
 return lives;
@@ -105,9 +109,7 @@ return lives;
 //MAIN PAGE____________________________________________________________________________________
 
 function createMainPage() {
-  const wrapper = document.getElementById('wrapper');
-  wrapper.appendChild(createBackground("stars"));
-  wrapper.appendChild(createBackground("twinkling"));
+  createBackgroundApp();
   wrapper.appendChild(createLogo());
   wrapper.appendChild(createNavigation("main-nav__items", "main-nav"));
 }
@@ -151,9 +153,7 @@ function createItem(title, hashChange) {
 //CHOOSE HERO________________________________________
 
 function createChooseHeroPage() {
-  const wrapper = document.getElementById("wrapper");
-  wrapper.appendChild(createBackground("stars"));
-  wrapper.appendChild(createBackground("twinkling"));
+  createBackgroundApp();
   wrapper.appendChild(createContainer("choose", "text-content", "Choose a hero", createFormHero));
 }
 
@@ -209,20 +209,10 @@ function createButtonOK(caption, callback) {
   return buttonOK;
 }
 
-
-// function createButtonSave(caption, hashChange) {
-//   let buttonOK = document.createElement('a');
-//   buttonOK.textContent = caption;
-//   buttonOK.onclick = hashChange;
-//   return buttonOK;
-// }
-
 //CHOOSE BACKGROUND________________________________________
 
 function createChooseBackgroundPage() {
-  const wrapper = document.getElementById("wrapper");
-  wrapper.appendChild(createBackground("stars"));
-  wrapper.appendChild(createBackground("twinkling"));
+  createBackgroundApp();
   wrapper.appendChild(createContainer("choose", "text-content", "choose a background", createFormBackground));
 }
 
@@ -244,9 +234,7 @@ function createFormBackground() {
 
 function createRulsPage() {
   const textContent = "Nisi doloribus quisquam doloremque voluptatem facilis sunt quod, eos eligendi temporibus facere nemo est sequi totam eius obcaecati perferendis rem aliquam molestiae."
-  const wrapper = document.getElementById('wrapper');
-  wrapper.appendChild(createBackground("stars"));
-  wrapper.appendChild(createBackground("twinkling"));
+  createBackgroundApp();
   wrapper.appendChild(createContainer("choose", "text-content", "Rules and controls", createTextContent, textContent));
 }
 
@@ -259,9 +247,7 @@ function createTextContent(textContent) {
 //Records________________________________________
 
 function createRecordPage() {
-  const wrapper = document.getElementById('wrapper');
-  wrapper.appendChild(createBackground("stars"));
-  wrapper.appendChild(createBackground("twinkling"));
+  createBackgroundApp();
   wrapper.appendChild(createContainer("choose", "text-content", "Records"));
 }
 

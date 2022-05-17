@@ -23,11 +23,12 @@ let game = {
     character2:null,
     background: null,
     shot: null,
-    live: null,
-    bonus: null,
+    life: null,
+    protection: null,
     asteroid: null,
     cell: null,
     explosion: null,
+    shield:null
   },
 
   start() {
@@ -38,6 +39,7 @@ let game = {
   },
   init() {
     this.canvas = document.getElementById('mycanvas');
+    this.canvas.style.cursor="none";
     console.log(this.canvas)
     this.ctx = this.canvas.getContext('2d');
     this.initDimensions();
@@ -109,18 +111,22 @@ let game = {
     this.create();
     this.character.init()
     
-
     this.gameInterval = setInterval(() => {
       this.update();
+      // this.character.onProtect();
     }, 50);
 
     this.asterInterval = setInterval(() => {
       this.field.createObject('asteroid', this.sprites.asteroid);
-    }, 500);
+    }, 300);
 
     this.fireInterval = setInterval(() => {
       this.character.createFire();
-    }, 400);
+    }, 500);
+
+    this.protectionInterval= setInterval(() => {
+      this.field.createObject('protection', this.sprites.protection);
+    }, 20000);
 
     this.bonusInterval = setInterval(() => {
       const countLives = document.querySelector('.lives').childElementCount;
@@ -129,6 +135,7 @@ let game = {
       }
     }, 8000);
   },
+
   create() {
     this.field.create();
     this.field.createObject('asteroid', this.sprites.asteroid);
@@ -143,7 +150,70 @@ let game = {
     this.render();
     this.field.updateObject();
     this.character.updateFire();
+    
   },
+  asterExploded(){
+    var score = this.score++;
+    document.getElementById('score').textContent = score;
+  },
+  bonusExploded(){
+    var container = document.querySelector('.lives');
+    var addLife=document.createElement('img');
+    addLife.src="img/life.png";
+    container.appendChild(addLife);
+  },
+  gameOver(){
+    clearInterval(this.gameInterval);
+    clearInterval(this.asterInterval);
+    clearInterval(this.fireInterval);
+    clearInterval(this.bonusInterval);
+    this.saveScore();
+    
+    this.started=false;
+    document.location.reload();
+  },
+  saveScore(){
+    var AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
+    var password = Math.random();
+    let name = prompt("Please enter your name?", "");
+      var fHash = {};
+      if(name){  
+       fHash[name]= document.getElementById('score').textContent
+      }
+      console.log(fHash)
+    $.ajax(AjaxHandlerScript,
+      {
+        type: "POST",
+        cache: false,
+        dataType: "json",
+        data: {
+          f: "LOCKGET",
+          n: "NastyaK_test",
+          p: password
+        },
+        success:$.ajax(AjaxHandlerScript,
+          {
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            data: {
+              f: "UPDATE",
+              n: "NastyaK_test",
+              p: password,
+              v: JSON.stringify(fHash)
+          },
+          success:function(data){console.log("DataLoadedUpdate - " + data.result)} ,
+          error: this.ErrorHandler
+        }
+        ) ,
+        error: this.ErrorHandler
+      }
+    );
+  },
+  ErrorHandler(jqXHR, StatusStr, ErrorStr){
+    alert(StatusStr + " " + ErrorStr);
+  },
+
   render() {
     // отрисовка элементов на canvas
     window.requestAnimationFrame(() => {
@@ -157,5 +227,6 @@ let game = {
 
 window.addEventListener('load', () => {
   game.start();
+  
 });
 

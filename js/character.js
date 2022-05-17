@@ -3,7 +3,9 @@ game.character = {
   moveX: 0,
   moveY: 0,
   fire: [],
- 
+  animx: 0,
+  animy: 0,
+  isProtected:false,
   //координаты героя при загрузке
   init() {
     this.moveX = game.field.offsetX + (game.field.width * game.sprites.cell.width) / 2 - 20;
@@ -11,14 +13,14 @@ game.character = {
   },
   createFire() {
     this.fire.push({
-      x: this.moveX,
-      y: this.moveY,
+      x: this.moveX + 10,
+      y: this.moveY - 10,
       dx: -0.2,
       dy: -2.5
     })
     this.fire.push({
-      x: this.moveX,
-      y: this.moveY,
+      x: this.moveX + 10,
+      y: this.moveY - 10,
       dx: 0.2,
       dy: -2.5
     })
@@ -32,7 +34,7 @@ game.character = {
       }
     }
   },
-  start(offsetX){
+  start(offsetX) {
     game.character.moveX = offsetX;
     if (game.character.moveX <= game.field.offsetX) {
       game.character.moveX = game.field.offsetX
@@ -41,10 +43,21 @@ game.character = {
     }
   },
 
+  onProtect() {
+    this.animx = this.animx + 1;
+    if (this.animx > 4) {
+      this.animy++; this.animx = 0;
+    }
+    if (this.animy > 3) {
+      this.animx = 0; this.animy = 0;
+    }
+  },
+
   create() {
     for (var i in this.fire) {
       this.game.ctx.drawImage(this.game.sprites.shot, this.fire[i].x, this.fire[i].y, 20, 20);
     }
     this.game.ctx.drawImage(this.game.sprites[localStorage.getItem("key")], this.moveX, this.moveY, 40, 40);
+    this.game.ctx.drawImage(this.game.sprites.shield, 192 * Math.floor(this.animx), 192 * Math.floor(this.animy), 192, 192, this.moveX - 15, this.moveY - 10, 70, 70);
   }
 }
