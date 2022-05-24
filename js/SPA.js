@@ -41,6 +41,10 @@ function switchToGame() {
   document.location.reload();
 }
 function switchToMain() {
+  clearInterval(game.gameInterval);
+  clearInterval(game.asterInterval);
+  clearInterval(game.fireInterval);
+  clearInterval(game.bonusInterval);
   switchToState({ page: 'Main' });
 }
 function switchToHero() {
@@ -56,17 +60,18 @@ function switchToRecords() {
   switchToState({ page: 'Records' });
 }
 
-function saveSelection(){
+function saveSelection(key){
   var selection=document.getElementsByTagName('input');
   for(var i=0; i<=selection.length; i++){
     if(selection[i].checked==true){
       var value=selection[i].value;
-      localStorage.setItem("key",value)
+      localStorage.setItem(key,value)
     }
   }
 }
 
 renderNewState();
+
 function createBackgroundApp(){
   wrapper.appendChild(createBackground("stars"));
   wrapper.appendChild(createBackground("twinkling"));
@@ -80,7 +85,8 @@ function createGamePage() {
   wrapper.style.height="100%"
   wrapper.appendChild(canvas);
   wrapper.appendChild(createScore())
-  wrapper.appendChild(createLives("lives"))
+  wrapper.appendChild(createLives("lives"));
+  wrapper.appendChild(createButtonOK("Back", switchToMain,"score butBack")); 
 }
 
 function createScore() {
@@ -104,6 +110,13 @@ for (let i=1; i<=3;i++){
 }
 return lives;
 }
+
+// function createGameOver(id) {
+//   let animGameOver = document.createElement('div');
+//   animGameOver.id=id;
+//   animGameOver.textContent = "GAME OVER";
+//   return animGameOver;
+// }
 
 
 //MAIN PAGE____________________________________________________________________________________
@@ -154,19 +167,19 @@ function createItem(title, hashChange) {
 
 function createChooseHeroPage() {
   createBackgroundApp();
-  wrapper.appendChild(createContainer("choose", "text-content", "Choose a hero", createFormHero));
+  wrapper.appendChild(createContainer("choose", "text-content", "Choose a hero", createFormHero,"character"));
 }
 
-function createContainer(classNameContainer, classNameTitle, caption, callback, argsCollback) {
+function createContainer(classNameContainer, classNameTitle, caption, callback,key, arg) {
   let container = document.createElement('div');
   let title = document.createElement('h1');
   container.className = classNameContainer;
   title.className = classNameTitle;
   title.textContent = caption;
   container.appendChild(title);
-  container.appendChild(callback(argsCollback));
+  container.appendChild(callback(arg));
   container.appendChild(createButtonOK("OK", switchToMain));
-  container.appendChild(createButtonOK("SAVE", saveSelection));
+  container.appendChild(createButtonSave("SAVE", key));
   return container;
 }
 
@@ -202,30 +215,38 @@ function createLabel(htmlFor, imgSrc, className) {
   return label;
 }
 
-function createButtonOK(caption, callback) {
+function createButtonOK(caption, callback,className) {
   let buttonOK = document.createElement('a');
+  buttonOK.className=className;
   buttonOK.textContent = caption;
   buttonOK.onclick = callback;
   return buttonOK;
+}
+
+function createButtonSave(caption, key) {
+  let buttonSave = document.createElement('a');
+  buttonSave.textContent = caption;
+  buttonSave.addEventListener('click', saveSelection.bind(this, key), false);
+  return buttonSave;
 }
 
 //CHOOSE BACKGROUND________________________________________
 
 function createChooseBackgroundPage() {
   createBackgroundApp();
-  wrapper.appendChild(createContainer("choose", "text-content", "choose a background", createFormBackground));
+  wrapper.appendChild(createContainer("choose", "text-content", "choose a background", createFormBackground,"background"));
 }
 
 function createFormBackground() {
   let form = document.createElement('form');
   form.name="myform"
   
-  form.appendChild(createInput("background1", "background", "background1", true));
-  form.appendChild(createLabel("background1", "img/background/background1.jpg", "background-img"));
-  form.appendChild(createInput("background2", "background", "background2", false));
-  form.appendChild(createLabel("background2", "img/background/background2.jpg", "background-img"));
-  form.appendChild(createInput("background3", "background", "background3", false));
-  form.appendChild(createLabel("background3", "img/background/background3.jpg", "background-img"));
+  form.appendChild(createInput("background1", "background", "background", true));
+  form.appendChild(createLabel("background1", "img/background/background1.png", "background-img"));
+  form.appendChild(createInput("background2", "background", "background1", false));
+  form.appendChild(createLabel("background2", "img/background/background2.png", "background-img"));
+  form.appendChild(createInput("background3", "background", "background2", false));
+  form.appendChild(createLabel("background3", "img/background/background3.png", "background-img"));
   return form;
 }
 

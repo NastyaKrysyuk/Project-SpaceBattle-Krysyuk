@@ -3,8 +3,9 @@
       text-align: center;
       margin: 0;
       padding: 0;
-    
+
     }
+
     canvas {
       position: absolute;
       top: 50%;
@@ -15,28 +16,35 @@
       -moz-transform: translate(-50%, -50%);
       -webkit-transform: translate(-50%, -50%);
     }
-    .score, .lives{
-    width: 15%;
-    color: #ffffff;
-    position: absolute;
-    font-size: 2vw;
-    font-family: fantasy;
-    border: 1px solid;
-    border-radius: 21px;
-    margin: 57px;
-    background-color: #ffffff75;
-    padding: 12px;
-    vertical-align: middle;
-    right: 0;
+
+    .score, .lives {
+      width: 15%;
+      color: #ffffff;
+      position: absolute;
+      font-size: 2vw;
+      font-family: fantasy;
+      border: 1px solid;
+      border-radius: 21px;
+      margin: 57px;
+      background-color: #ffffff75;
+      padding: 12px;
+      vertical-align: middle;
+      right: 0;
     }
 
-    .lives{
+    .butBack {
+      left: 50%;
+      transform: translate(-70%);
+    }
+
+    .lives {
       display: flex;
       justify-content: center;
       align-items: center;
       left: 0;
     }
-    .lives img{
+
+    .lives img {
       width: 20%;
-      margin:0 10px;
+      margin: 0 10px;
     }

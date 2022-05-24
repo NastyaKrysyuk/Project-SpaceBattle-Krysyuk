@@ -1,7 +1,7 @@
 game.field = {
   game: game,
-  height: 16,
-  width: 14,
+  height: 13,
+  width: 16,
   offsetX: 0,
   offsetY: 0,
   cells: [],
@@ -17,14 +17,12 @@ game.field = {
         this.cells.push(this.createCell(row, col));
       }
     }
-    console.log('cells', this.cells);
   },
 
   createCell(row, col) {
     const cellSize = this.game.sprites.cell.width;
     this.offsetX = (this.game.width / 2) - (cellSize * this.width / 2);
     this.offsetY = (this.game.height / 2) - (cellSize * this.height / 2);
-
     return {
       row: row,
       col: col,
@@ -46,13 +44,15 @@ game.field = {
     });
   },
 
+//условие столкновения объектов
   collides(obj1X, obj1Y, obj2X, obj2Y, obj1H, obj1W, obj2H, obj2W) {
-    return obj1X < obj2X + obj2W / 4 &&
-      obj1X + obj1W / 4 > obj2X &&
-      obj1Y < obj2Y + obj2H / 4 &&
-      obj1H / 4 + obj1Y > obj2Y
+    return obj1X < obj2X + obj2W / 3 &&
+      obj1X + obj1W / 3 > obj2X &&
+      obj1Y < obj2Y + obj2H / 3 &&
+      obj1H / 3 + obj1Y > obj2Y
   },
 
+//удалить после столкновения
   deleteObject(objNum1, objNum2) {
     this.expl.push({
       x: this.aster[objNum1].x,
@@ -113,14 +113,14 @@ game.field = {
           //столкновение щит + пуля
           else if (this.aster[i].type === "protection") {
             this.deleteObject(i, j);
-            this.game.character.isProtected=true;
+            this.game.character.isProtected = true;
             //анимация защиты
             this.protectInterval = setInterval(() => {
               this.game.character.onProtect();
             }, 50);
             setTimeout(() => {
               clearInterval(this.protectInterval);
-              this.game.character.isProtected=false;
+              this.game.character.isProtected = false;
             }, 8000)
           }
         }
@@ -141,27 +141,26 @@ game.field = {
     this.cells.forEach((cell) => {
       this.game.ctx.drawImage(this.game.sprites.cell, cell.x, cell.y);
     });
-    for (var i in this.aster) {
-      switch (this.aster[i].type) {
+
+    this.aster.forEach((aster) => {
+      switch (aster.type) {
         case 'asteroid':
           this.game.ctx.save();
-          this.game.ctx.translate(this.aster[i].x + 25, this.aster[i].y + 25);
-          this.game.ctx.rotate(this.aster[i].angle);
+          this.game.ctx.translate(aster.x + 25, aster.y + 25);
+          this.game.ctx.rotate(aster.angle);
           this.game.ctx.drawImage(this.game.sprites.asteroid, -25, -25, 30, 30);
           this.game.ctx.restore();
           break;
         case 'bonus':
-          this.game.ctx.drawImage(this.game.sprites.life, this.aster[i].x, this.aster[i].y, 20, 20);
+          this.game.ctx.drawImage(this.game.sprites.life, aster.x, aster.y, 20, 20);
           break;
         case 'protection':
-          this.game.ctx.drawImage(this.game.sprites.protection, this.aster[i].x, this.aster[i].y, 20, 20);
+          this.game.ctx.drawImage(this.game.sprites.protection, aster.x, aster.y, 20, 20);
           break;
       }
-    }
-    for (var i in this.expl) {
-      this.game.ctx.drawImage(this.game.sprites.explosion, 128 * Math.floor(this.expl[i].animx), 128 * Math.floor(this.expl[i].animy), 128, 128, this.expl[i].x, this.expl[i].y, 30, 30);
-
-    }
-
+    });
+    this.expl.forEach((expl) => {
+      this.game.ctx.drawImage(this.game.sprites.explosion, 128 * Math.floor(expl.animx), 128 * Math.floor(expl.animy), 128, 128, expl.x, expl.y, 30, 30);
+    });
   }
 };

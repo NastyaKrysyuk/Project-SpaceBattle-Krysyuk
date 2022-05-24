@@ -1,67 +1,49 @@
-function TAJAXStorage() {
-  var AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
-  var self = this,
-    pHash = {};
-  $.ajax(AjaxHandlerScript,
-    {
-      type: "POST",
-      cache: false,
-      dataType: "json",
-      data: {
-        f: "READ",
-        n: "NastyaK_test"
-      },
-      success: ReadData,
-      error: ErrorHandler
-    }
-  );
-  function ReadData(data) {
-    if (data !== " ") {
-      pHash = JSON.parse(data.result);
-
-      console.log("ReadData - " + data.result);
-    } else if (data == " ") {
-      $.ajax(AjaxHandlerScript,
-        {
-          type: "POST",
-          cache: false,
-          dataType: "json",
-          data: {
-            f: "INSERT",
-            n: "NastyaK_test",
-            v: JSON.stringify(pHash)
-          },
-          success: DataLoadedInsert,
-          error: ErrorHandler
-        }
-      );
-
-      function DataLoadedInsert(data) {
-        console.log("DataLoadedInsert - " + data.result);
-      }
-    }
-  }
-
-  function addValueOnTheServer(hash) {
-    var password = Math.random();
-
+class TAJAXStorage  {
+  constructor() {
+    var AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
+    var self = this, pHash = {};
     $.ajax(AjaxHandlerScript,
       {
         type: "POST",
         cache: false,
         dataType: "json",
         data: {
-          f: "LOCKGET",
-          n: "NastyaK_test",
-          p: password
+          f: "READ",
+          n: "NastyaK_test"
         },
-        success: LockgetData,
+        success: ReadData,
         error: ErrorHandler
       }
     );
-      console.log("here")
-    function LockgetData(data) {
-      console.log("LockgetData - " + data.result);
+    function ReadData(data) {
+      if (data !== " ") {
+        pHash = JSON.parse(data.result);
+
+        console.log("ReadData - " + data.result);
+      } else if (data == " ") {
+        $.ajax(AjaxHandlerScript,
+          {
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            data: {
+              f: "INSERT",
+              n: "NastyaK_test",
+              v: JSON.stringify(pHash)
+            },
+            success: DataLoadedInsert,
+            error: ErrorHandler
+          }
+        );
+
+        function DataLoadedInsert(data) {
+          console.log("DataLoadedInsert - " + data.result);
+        }
+      }
+    }
+
+    function addValueOnTheServer(hash) {
+      var password = Math.random();
 
       $.ajax(AjaxHandlerScript,
         {
@@ -69,49 +51,65 @@ function TAJAXStorage() {
           cache: false,
           dataType: "json",
           data: {
-            f: "UPDATE",
+            f: "LOCKGET",
             n: "NastyaK_test",
-            p: password,
-            v: JSON.stringify(hash)
+            p: password
           },
-          success: DataLoadedUpdate,
+          success: LockgetData,
           error: ErrorHandler
         }
       );
 
-      function DataLoadedUpdate(data) {
-        console.log("DataLoadedUpdate - " + data.result);
+      function LockgetData(data) {
+        console.log("LockgetData - " + data.result);
+
+        $.ajax(AjaxHandlerScript,
+          {
+            type: "POST",
+            cache: false,
+            dataType: "json",
+            data: {
+              f: "UPDATE",
+              n: "NastyaK_test",
+              p: password,
+              v: JSON.stringify(hash)
+            },
+            success: DataLoadedUpdate,
+            error: ErrorHandler
+          }
+        );
+
+        function DataLoadedUpdate(data) {
+          console.log("DataLoadedUpdate - " + data.result);
+        }
       }
     }
-  }
 
-  function ErrorHandler(jqXHR, StatusStr, ErrorStr) {
-    alert(StatusStr + " " + ErrorStr);
-  }
-
-  self.addValue = function (key, value) {
-    pHash[key] = value;
-    // addValueOnTheServer(pHash); 
-
-  };
-
-  self.getValue = function (key) {
-    return pHash[key];
-  };
-
-  self.deleteValue = function (key) {
-    if (key in pHash) {
-      delete pHash[key];
-      addValueOnTheServer(pHash);
-      return true;
-    } else {
-      return false;
+    function ErrorHandler(jqXHR, StatusStr, ErrorStr) {
+      alert(StatusStr + " " + ErrorStr);
     }
-  };
 
-  self.getKeys = function () {
-    return (Object.keys(pHash));
-  };
+    self.addValue = function (key, value) {
+      pHash[key] = value;
+      addValueOnTheServer(pHash);
+    };
+
+    self.getValue = function (key) {
+      return pHash[key];
+    };
+
+    self.deleteValue = function (key) {
+      if (key in pHash) {
+        delete pHash[key];
+        addValueOnTheServer(pHash);
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    self.getKeys = function () {
+      return (Object.keys(pHash));
+    };
+  }
 }
-
-
