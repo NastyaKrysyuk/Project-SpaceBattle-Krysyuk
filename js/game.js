@@ -168,6 +168,13 @@ let game = {
     switchToMain();
   },
   saveScore() {
+    // let promise = new Promise(function(resolve) { // указываем параметр
+    //   let playersRef = firebase.database().ref("list/");
+    //   resolve(playersRef);
+    // });
+    // promise.then(function(result) {
+    //   result.push(obj); // выведет массив с результатом
+    // });
     let obj = {};
     let name;
     do {

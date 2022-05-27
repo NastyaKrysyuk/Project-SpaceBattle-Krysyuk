@@ -290,14 +290,28 @@ function containerForRecords(className) {
   caption.className = className;
   caption.textContent = "Records";
   container.id = "wrap-records";
-  container.appendChild(caption)
-  let playersRef = firebase.database().ref("list/");
-  playersRef.on("child_added", function (data) {
-    const newPlayer = data.val();
-    container.innerHTML += `<p>${newPlayer.name} : ${newPlayer.score}</p>`;
-  })
+  container.appendChild(caption);
+  const ref = firebase.database().ref("lit/");
+  const getData = (ref) => {
+    return new Promise((resolve, reject) => {
+      const onError = error => reject(error);
+      const onData = snap => {
+        return resolve(snap.val())
+      };
+  
+      ref.on("value", onData, onError);
+    });
+  };
+ 
+  getData(ref)
+    .then((records) => {
+      for(let record in records) {
+        console.log(records[record])
+        container.innerHTML += `<p>${records[record].name} : ${records[record].score}</p>`;
+      }
+    })
+    .catch((error) => {
+       
+    });
   return container;
 }
-
-
-
