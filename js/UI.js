@@ -1,80 +1,15 @@
-// import {createGamePage, createMainPage,createChooseHeroPage,createChooseBackgroundPage,createRulesPage,createRecordPage} from 'UI.js';
-// export {switchToGame, switchToMain,switchToHero,switchToBackground,switchToRules,switchToRecords};
+// import {switchToGame, switchToMain,switchToHero,switchToBackground,switchToRules,switchToRecords} from 'SPA.js';
 const wrapper = document.getElementById("wrapper");
-
-window.onhashchange = renderNewState;
-function renderNewState() {
-  const hash = window.location.hash;
-  let state = decodeURIComponent(hash.substr(1));
-
-  if (state === '') {
-    state = { page: 'Main' };
-  } else {
-    state = JSON.parse(state);
-  }
-  document.getElementById('wrapper').innerHTML = '';
-
-  switch (state.page) {
-    case 'Game':
-      createGamePage();
-      break;
-    case 'Main':
-      createMainPage();
-      break;
-    case 'ChooseHero':
-      createChooseHeroPage();
-      break;
-    case 'ChooseBackground':
-      createChooseBackgroundPage();
-      break;
-    case 'Rules':
-      createRulesPage();
-      break;
-    case 'Records':
-      createRecordPage();
-      break;
-  }
-}
-
-function switchToState(state) {
-  location.hash = encodeURIComponent(JSON.stringify(state));
-}
-function switchToGame() {
-  switchToState({ page: 'Game' });
-  document.location.reload();
-}
-function switchToMain() {
-  clearInterval(game.gameInterval);
-  clearInterval(game.asterInterval);
-  clearInterval(game.fireInterval);
-  clearInterval(game.bonusInterval);
-  switchToState({ page: 'Main' });
-}
-function switchToHero() {
-  switchToState({ page: 'ChooseHero' });
-}
-function switchToBackground() {
-  switchToState({ page: 'ChooseBackground' });
-}
-function switchToRules() {
-  switchToState({ page: 'Rules' });
-}
-function switchToRecords() {
-  switchToState({ page: 'Records' });
-}
 
 function saveSelection(key) {
   var selection = document.getElementsByTagName('input');
   for (var i = 0; i <= selection.length; i++) {
     if (selection[i].checked == true) {
       var value = selection[i].value;
-      localStorage.setItem(key, value)
+      localStorage.setItem(key, value);
     }
   }
 }
-
-renderNewState();
-
 function createBackgroundApp() {
   wrapper.appendChild(createBackground("stars"));
   wrapper.appendChild(createBackground("twinkling"));
@@ -84,7 +19,8 @@ function createGamePage() {
   let wrapper = document.getElementById('wrapper');
   let canvas = document.createElement('canvas');
   canvas.id = "mycanvas";
-  wrapper.style.height = "100%";
+  wrapper.style.height = "100%"
+  wrapper.style.height = "100%"
   wrapper.appendChild(canvas);
   wrapper.appendChild(createScore())
   wrapper.appendChild(createLives("lives"));
@@ -260,20 +196,17 @@ function createTextContent(className) {
   caption.textContent = "Rules";
   container.id = "wrap-records";
   container.appendChild(caption);
-  getPageRules({ url: 'rules.html' })
-    .then(
-      result => container.innerHTML += result
-    )
-    .catch(
-      () => container.innerHTML += "Oh, no :( Something went wrong, please try again later"
-    );
+  $.ajax("js/records.html",
+    {
+      type: "GET",
+      cache: false,
+      dataType: "html",
+      success: function (content) {
+        container.innerHTML += content;
+      },
+    }
+  );
   return container;
-}
-
-function getPageRules(options) {
-  return new Promise(function (resolve, reject) {
-    $.ajax(options).done(resolve).fail(reject);
-  });
 }
 
 //Records________________________________________
@@ -299,5 +232,4 @@ function containerForRecords(className) {
   return container;
 }
 
-
-
+export {createGamePage, createMainPage,createChooseHeroPage,createChooseBackgroundPage,createRulesPage,createRecordPage};

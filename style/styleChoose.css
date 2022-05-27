@@ -10,7 +10,7 @@ input{
   text-transform: uppercase;
   text-align: center;
 }
-.choose{
+.choose,#wrap-records{
   border: 2px solid #7757b171;
   border-radius: 1rem;
   padding: 1rem 8rem;

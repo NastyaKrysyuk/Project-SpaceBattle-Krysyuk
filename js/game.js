@@ -1,6 +1,5 @@
-// import TAJAXStorage from 'js/AJAXStorage.js';
 let game = {
-  started: false,
+  isStarted: false,
   canvas: null,
   ctx: null,
   field: null,
@@ -23,8 +22,8 @@ let game = {
     character1: null,
     character2: null,
     background: null,
-    background1:null,
-    background2:null,
+    background1: null,
+    background2: null,
     shot: null,
     life: null,
     protection: null,
@@ -35,15 +34,15 @@ let game = {
   },
 
   start() {
+    this.isStarted = true;
     this.init();
-
     this.preload(() => {
       this.run();
     });
   },
   init() {
-    localStorage.setItem("character","character");
-    localStorage.setItem("background","background");
+    if (localStorage.getItem('character') == null) localStorage.setItem("character", "character");
+    if (localStorage.getItem('background') == null) localStorage.setItem("background", "background");
     this.canvas = document.getElementById('mycanvas');
     this.canvas.style.cursor = "none";
     this.ctx = this.canvas.getContext('2d');
@@ -64,7 +63,7 @@ let game = {
       realHeight: window.innerHeight
     };
 
-  //деструктуризация 
+    //деструктуризация 
     let { maxWidth, maxHeight, minWidth, minHeight, realWidth, realHeight } = data;
 
     if (realWidth / realHeight > maxWidth / maxHeight) {
@@ -87,14 +86,12 @@ let game = {
   preload(callback) {
     let loaded = 0;
     let required = Object.keys(this.sprites).length;
-
     let onAssetLoad = () => {
       ++loaded;
       if (loaded >= required) {
         callback();
       }
     };
-
     this.preloadSprites(onAssetLoad);
   },
   preloadSprites(onAssetLoad) {
@@ -108,11 +105,10 @@ let game = {
     // запуск игры
     console.log('запуск игры');
     this.create();
-    this.character.init()
+    this.character.init();
 
     this.gameInterval = setInterval(() => {
       this.update();
-      // this.character.onProtect();
     }, 50);
 
     this.asterInterval = setInterval(() => {
@@ -168,22 +164,19 @@ let game = {
     clearInterval(this.fireInterval);
     clearInterval(this.bonusInterval);
     this.saveScore();
-    this.started = false;
-    document.location.reload();
+    this.isStarted = false;
+    switchToMain();
   },
   saveScore() {
-    let scoreStorage = new TAJAXStorage();
-    let name = prompt("Game over:(*\nPlease enter your name for records?", "");
-    var fHash = {};
-    if (name) {
-      // fHash.name[score]=document.getElementById('score').textContent;
-      fHash[name] = document.getElementById('score').textContent;
-      scoreStorage.addValue(name, fHash);
-    } else {
-      alert('Ввод отменен!')
-    }
-    console.log(fHash);
-
+    let obj = {};
+    let name;
+    do {
+      name = prompt("Game Over:(\nPlease, enter your name!", "");
+    }while(!name)
+    obj["name"] = name;
+    obj["score"] = this.score;
+    let playersRef = firebase.database().ref("list/");
+    playersRef.push(obj);
   },
 
   render() {
