@@ -1,3 +1,4 @@
+// import {game} from './game.js';
 game.field = {
   game: game,
   height: 13,
@@ -7,6 +8,7 @@ game.field = {
   cells: [],
   aster: [],
   expl: [],
+
   create() {
     this.createCells();
   },
@@ -65,7 +67,7 @@ game.field = {
   },
 
   updateObject() {
-    for (var i in this.aster) {
+    for (let i in this.aster) {
       switch (this.aster[i].type) {
         case 'asteroid':
         case 'bonus':
@@ -83,12 +85,12 @@ game.field = {
         if (this.aster[i].type === "asteroid" && !this.game.character.isProtected) {
           //минус жизнь
           document.querySelector('.lives').firstChild.remove();
-          //конец игры(сохранять счёт)
+          //конец игры
           if (document.querySelector('.lives').childElementCount == 0) {
             this.game.gameOver();
           }
         }
-        this.aster.splice(i, 1)
+        this.aster.splice(i, 1);
       }
 
       //столкновение астероида + стенка 
@@ -132,8 +134,7 @@ game.field = {
     for (i in this.expl) {
       this.expl[i].animx = this.expl[i].animx + 5;
       if (this.expl[i].animx > 5) { this.expl[i].animy++; this.expl[i].animx = 0 }
-      if (this.expl[i].animy > 7)
-        this.expl.splice(i, 1);
+      if (this.expl[i].animy > 7) this.expl.splice(i, 1);
     }
   },
 

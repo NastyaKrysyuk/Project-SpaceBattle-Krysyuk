@@ -4,10 +4,10 @@
 }
 
 body {
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow: hidden;
   align-items: center;
   height: 100vh;
   color: white;
@@ -16,8 +16,8 @@ body {
 
 /*animation svg*/
 object {
-  width: 512px;
-  height: 350px;
+  /* width: 512px;
+  height: 350px; */
   animation: pulsing 2s infinite;
   transform: translateZ(0);
 }
@@ -53,48 +53,47 @@ object {
 }
 
 .stars {
-  background: black url('./img/stars.png') repeat top center;
+  background: rgb(0, 0, 0) url('./img/stars.png') repeat top center;
   z-index: -2;
 }
 
 .twinkling {
   background-image: url("./img/twinkling.png");
+  z-index: -1;
   animation: 3s twinkle infinite;
   animation-timing-function: linear;
-  z-index: -1;
   transform: translateZ(0);
 }
 
 @keyframes twinkle {
   from {
-    backrgound-position: 0
+    background-position: 100px
   }
 
   to {
-    background-position: -100px 0
+    background-position: -100px
   }
 }
 
 /*nav*/
 .main-nav__items li{
-  list-style: none;
   margin-bottom: 0.9em;
   text-align: center;
+  list-style: none;
   transition: all 1s ease;
 }
 .main-nav__items li a,a {
+  padding: 0.2em;
   margin: 0.5em;
   color: white;
+  line-height: 1.4em;
   text-align: center;
   font-size: 2.2em;
-  line-height: 1.4em;
   border: 1px solid #7757b171;
   border-radius: 15px;
   background-color: #7757b171;
-  padding: 0.2em;
   text-decoration: none;
   cursor: pointer;
-  
 }
 
 .main-nav__items li:hover a{

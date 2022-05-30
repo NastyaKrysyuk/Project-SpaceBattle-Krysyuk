@@ -1,8 +1,8 @@
-// import {createGamePage, createMainPage,createChooseHeroPage,createChooseBackgroundPage,createRulesPage,createRecordPage} from 'UI.js';
-// export {switchToGame, switchToMain,switchToHero,switchToBackground,switchToRules,switchToRecords};
+// import {game} from './game.js';
 const wrapper = document.getElementById("wrapper");
 
 window.onhashchange = renderNewState;
+renderNewState();
 function renderNewState() {
   const hash = window.location.hash;
   let state = decodeURIComponent(hash.substr(1));
@@ -17,6 +17,7 @@ function renderNewState() {
   switch (state.page) {
     case 'Game':
       createGamePage();
+      // game.start()
       break;
     case 'Main':
       createMainPage();
@@ -41,7 +42,9 @@ function switchToState(state) {
 }
 function switchToGame() {
   switchToState({ page: 'Game' });
-  document.location.reload();
+
+  game.start()
+  // document.location.reload();
 }
 function switchToMain() {
   clearInterval(game.gameInterval);
@@ -63,28 +66,23 @@ function switchToRecords() {
   switchToState({ page: 'Records' });
 }
 
-function saveSelection(key) {
-  var selection = document.getElementsByTagName('input');
-  for (var i = 0; i <= selection.length; i++) {
-    if (selection[i].checked == true) {
-      var value = selection[i].value;
-      localStorage.setItem(key, value)
-    }
-  }
-}
 
-renderNewState();
+function saveSelection(key) {
+  const selection = document.getElementsByTagName('input');
+  const value = Array.from(selection).filter(selection => selection.checked == true)[0].value;
+  localStorage.setItem(key, value);
+}
 
 function createBackgroundApp() {
   wrapper.appendChild(createBackground("stars"));
   wrapper.appendChild(createBackground("twinkling"));
 }
+
 //GAME_________________________________________________________________________________________
 function createGamePage() {
   let wrapper = document.getElementById('wrapper');
   let canvas = document.createElement('canvas');
   canvas.id = "mycanvas";
-  wrapper.style.height = "100%";
   wrapper.appendChild(canvas);
   wrapper.appendChild(createScore())
   wrapper.appendChild(createLives("lives"));
@@ -108,7 +106,7 @@ function createLives(className) {
   for (let i = 1; i <= 3; i++) {
     let img = document.createElement('img');
     img.src = "img/life.png";
-    lives.appendChild(img)
+    lives.appendChild(img);
   }
   return lives;
 }
@@ -139,7 +137,7 @@ function createNavigation(classNameList, classNameNav) {
   let list = document.createElement('ul')
   list.className = classNameList;
   navgation.className = classNameNav;
-  list.appendChild(createItem("Start game", switchToGame))
+  list.appendChild(createItem("Start game", switchToGame,"start-game"))
   list.appendChild(createItem("Choose a hero", switchToHero))
   list.appendChild(createItem("Choose a background", switchToBackground))
   list.appendChild(createItem("Rules and controls", switchToRules))
@@ -148,10 +146,11 @@ function createNavigation(classNameList, classNameNav) {
   return navgation;
 }
 
-function createItem(title, hashChange) {
+function createItem(title, hashChange,id) {
   let item = document.createElement('li');
   let href = document.createElement('a');
   href.textContent = title;
+  href.id=id
   href.onclick = hashChange;
   item.appendChild(href);
   return item;
@@ -260,7 +259,7 @@ function createTextContent(className) {
   caption.textContent = "Rules";
   container.id = "wrap-records";
   container.appendChild(caption);
-  getPageRules({ url: 'rules.html' })
+  getPageRules({ url: './rules.html' })
     .then(
       result => container.innerHTML += result
     )
@@ -280,38 +279,32 @@ function getPageRules(options) {
 
 function createRecordPage() {
   createBackgroundApp();
-  wrapper.appendChild(containerForRecords("text-content"));
+  wrapper.appendChild(getRecords("text-content"));
   wrapper.appendChild(createButtonOK("OK", switchToMain));
 }
 
-function containerForRecords(className) {
+function getRecords(className) {
   let container = document.createElement('div');
   let caption = document.createElement("h1");
   caption.className = className;
   caption.textContent = "Records";
   container.id = "wrap-records";
   container.appendChild(caption);
-  const ref = firebase.database().ref("lit/");
+
+  const ref = firebase.database().ref("list/");
   const getData = (ref) => {
     return new Promise((resolve, reject) => {
-      const onError = error => reject(error);
-      const onData = snap => {
-        return resolve(snap.val())
-      };
-  
+      const onError = () => reject(new Error('Something went wrong!'));
+      const onData = snap => resolve(snap.val());
       ref.on("value", onData, onError);
     });
   };
- 
+
   getData(ref)
     .then((records) => {
-      for(let record in records) {
-        console.log(records[record])
-        container.innerHTML += `<p>${records[record].name} : ${records[record].score}</p>`;
+      for (let key in records) {
+        container.innerHTML += `<p>${records[key].name} : ${records[key].score}</p>`;
       }
-    })
-    .catch((error) => {
-       
     });
   return container;
 }

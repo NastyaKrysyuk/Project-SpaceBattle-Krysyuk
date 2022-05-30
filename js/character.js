@@ -1,3 +1,4 @@
+// import {game} from './game.js';
 game.character = {
   game: game,
   moveX: 0,
@@ -6,11 +7,13 @@ game.character = {
   animx: 0,
   animy: 0,
   isProtected:false,
+
   //координаты героя при загрузке
   init() {
-    this.moveX = game.field.offsetX + (game.field.width * game.sprites.cell.width) / 2 - 20;
+    this.moveX = game.field.offsetX + (game.field.width * game.sprites.cell.width) / 2 -20;
     this.moveY = game.field.offsetY + game.field.height * game.sprites.cell.height - game.sprites[localStorage.getItem("character")].height / 2;
   },
+
   createFire() {
     this.fire.push({
       x: this.moveX + 10,
@@ -25,8 +28,9 @@ game.character = {
       dy: -2.5
     })
   },
+
   updateFire() {
-    for (var i in this.fire) {
+    for (let i in this.fire) {
       this.fire[i].y += this.fire[i].dy;
       this.fire[i].x += this.fire[i].dx;
       if (this.fire[i].y <= this.game.field.offsetY || this.fire[i].x <= this.game.field.offsetX || this.fire[i].x >= this.game.field.offsetX + this.game.sprites.cell.width * this.game.field.width) {
@@ -34,12 +38,19 @@ game.character = {
       }
     }
   },
-  start(offsetX) {
-    game.character.moveX = offsetX;
-    if (game.character.moveX <= game.field.offsetX) {
-      game.character.moveX = game.field.offsetX;
-    } else if (game.character.moveX >= game.field.offsetX + game.field.width * game.sprites.cell.width - game.sprites[localStorage.getItem("character")].width / 2) {
-      game.character.moveX = game.field.offsetX + game.field.width * game.sprites.cell.width - game.sprites[localStorage.getItem("character")].width / 2
+
+  start(offsetX,offsetY) {
+    this.moveX = offsetX;
+    if (this.moveX <= game.field.offsetX) {
+      this.moveX = game.field.offsetX;
+    } else if (this.moveX >= game.field.offsetX + game.field.width * game.sprites.cell.width - game.sprites[localStorage.getItem("character")].width / 2) {
+      this.moveX = game.field.offsetX + game.field.width * game.sprites.cell.width - game.sprites[localStorage.getItem("character")].width / 2
+    }
+
+    if(offsetY>game.field.offsetY*2){
+      game.canvas.style.cursor = "none";
+    }else{
+      game.canvas.style.cursor = "pointer";
     }
   },
 

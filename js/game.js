@@ -40,19 +40,21 @@ let game = {
       this.run();
     });
   },
+
   init() {
     if (localStorage.getItem('character') == null) localStorage.setItem("character", "character");
     if (localStorage.getItem('background') == null) localStorage.setItem("background", "background");
     this.canvas = document.getElementById('mycanvas');
-    this.canvas.style.cursor = "none";
     this.ctx = this.canvas.getContext('2d');
     this.initDimensions();
     this.setTextFont();
   },
+
   setTextFont() {
     this.ctx.font = '38px monospace';
     this.ctx.fillStyle = '#d5e3e6';
   },
+
   initDimensions() {
     let data = {
       maxWidth: this.dimensions.max.width,
@@ -83,6 +85,7 @@ let game = {
     this.canvas.width = this.width;
     this.canvas.height = this.height;
   },
+
   preload(callback) {
     let loaded = 0;
     let required = Object.keys(this.sprites).length;
@@ -94,6 +97,7 @@ let game = {
     };
     this.preloadSprites(onAssetLoad);
   },
+
   preloadSprites(onAssetLoad) {
     for (let key in this.sprites) {
       this.sprites[key] = new Image();
@@ -101,9 +105,9 @@ let game = {
       this.sprites[key].addEventListener('load', onAssetLoad);
     }
   },
+
   run() {
     // запуск игры
-    console.log('запуск игры');
     this.create();
     this.character.init();
 
@@ -136,8 +140,11 @@ let game = {
     this.field.createObject('asteroid', this.sprites.asteroid);
     this.character.createFire();
 
-    window.addEventListener('mousemove', (event) => {
-      this.character.start(event.offsetX);
+    this.canvas.addEventListener('touchmove', (event) => {
+      this.character.start(event.targetTouches[0].clientX,event.targetTouches[0].clientY);
+    });
+    this.canvas.addEventListener('mousemove', (event) => {
+      this.character.start(event.clientX,event.clientY);
     });
   },
 
@@ -158,23 +165,18 @@ let game = {
     addLife.src = "img/life.png";
     container.appendChild(addLife);
   },
+
   gameOver() {
     clearInterval(this.gameInterval);
     clearInterval(this.asterInterval);
     clearInterval(this.fireInterval);
     clearInterval(this.bonusInterval);
-    this.saveScore();
     this.isStarted = false;
+    this.saveScore();
     switchToMain();
   },
+
   saveScore() {
-    // let promise = new Promise(function(resolve) { // указываем параметр
-    //   let playersRef = firebase.database().ref("list/");
-    //   resolve(playersRef);
-    // });
-    // promise.then(function(result) {
-    //   result.push(obj); // выведет массив с результатом
-    // });
     let obj = {};
     let name;
     do {
@@ -196,9 +198,12 @@ let game = {
     });
   }
 }
-
+// if (window.location.hash=='#%7B%22page%22%3A%22Game%22%7D'){
+//   game.start();
+// }
+// document.getElementById('start-game').addEventListener('click',()=>{
+//   game.start();
+// })
 window.addEventListener('load', () => {
   game.start();
-
 });
-
