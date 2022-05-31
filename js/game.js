@@ -1,4 +1,6 @@
-let game = {
+import { switchToMain } from './SPA.js';
+
+export let game = {
   isStarted: false,
   canvas: null,
   ctx: null,
@@ -36,6 +38,7 @@ let game = {
   start() {
     this.isStarted = true;
     this.init();
+    this.ctx.clearRect(0, 0, this.width, this.height);
     this.preload(() => {
       this.run();
     });
@@ -105,9 +108,19 @@ let game = {
       this.sprites[key].addEventListener('load', onAssetLoad);
     }
   },
+  
+  reset() {
+    this.field.aster = [];
+    this.field.expl = [];
+    this.field.cells = [];
+    this.field.expl = [];
+    this.character.fire = [];
+  },
 
   run() {
     // запуск игры
+    this.reset();
+    this.clearAllInterval();
     this.create();
     this.character.init();
 
@@ -141,10 +154,10 @@ let game = {
     this.character.createFire();
 
     this.canvas.addEventListener('touchmove', (event) => {
-      this.character.start(event.targetTouches[0].clientX,event.targetTouches[0].clientY);
+      this.character.start(event.targetTouches[0].clientX, event.targetTouches[0].clientY);
     });
     this.canvas.addEventListener('mousemove', (event) => {
-      this.character.start(event.clientX,event.clientY);
+      this.character.start(event.clientX, event.clientY);
     });
   },
 
@@ -166,14 +179,21 @@ let game = {
     container.appendChild(addLife);
   },
 
-  gameOver() {
+  clearAllInterval() {
     clearInterval(this.gameInterval);
     clearInterval(this.asterInterval);
     clearInterval(this.fireInterval);
     clearInterval(this.bonusInterval);
+    clearInterval(this.protectionInterval);
+  },
+
+  gameOver(withCallSwitch) {
+    this.clearAllInterval()
     this.isStarted = false;
-    this.saveScore();
-    switchToMain();
+    if (withCallSwitch) {
+      this.saveScore();
+      switchToMain();
+    }
   },
 
   saveScore() {
@@ -181,7 +201,7 @@ let game = {
     let name;
     do {
       name = prompt("Game Over:(\nPlease, enter your name!", "");
-    }while(!name)
+    } while (!name)
     obj["name"] = name;
     obj["score"] = this.score;
     let playersRef = firebase.database().ref("list/");
@@ -198,12 +218,4 @@ let game = {
     });
   }
 }
-// if (window.location.hash=='#%7B%22page%22%3A%22Game%22%7D'){
-//   game.start();
-// }
-// document.getElementById('start-game').addEventListener('click',()=>{
-//   game.start();
-// })
-window.addEventListener('load', () => {
-  game.start();
-});
+

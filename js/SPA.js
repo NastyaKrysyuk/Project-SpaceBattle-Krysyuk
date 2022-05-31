@@ -1,8 +1,8 @@
-// import {game} from './game.js';
-const wrapper = document.getElementById("wrapper");
+import {game} from './game.js';
 
+const wrapper = document.getElementById("wrapper");
 window.onhashchange = renderNewState;
-renderNewState();
+
 function renderNewState() {
   const hash = window.location.hash;
   let state = decodeURIComponent(hash.substr(1));
@@ -17,7 +17,7 @@ function renderNewState() {
   switch (state.page) {
     case 'Game':
       createGamePage();
-      // game.start()
+      game.start();
       break;
     case 'Main':
       createMainPage();
@@ -42,15 +42,9 @@ function switchToState(state) {
 }
 function switchToGame() {
   switchToState({ page: 'Game' });
-
-  game.start()
-  // document.location.reload();
 }
-function switchToMain() {
-  clearInterval(game.gameInterval);
-  clearInterval(game.asterInterval);
-  clearInterval(game.fireInterval);
-  clearInterval(game.bonusInterval);
+export function switchToMain() {
+  game.gameOver(false)
   switchToState({ page: 'Main' });
 }
 function switchToHero() {
@@ -66,11 +60,13 @@ function switchToRecords() {
   switchToState({ page: 'Records' });
 }
 
+renderNewState();
 
 function saveSelection(key) {
   const selection = document.getElementsByTagName('input');
   const value = Array.from(selection).filter(selection => selection.checked == true)[0].value;
   localStorage.setItem(key, value);
+  alert('Your choice is saved!');
 }
 
 function createBackgroundApp() {
@@ -79,14 +75,15 @@ function createBackgroundApp() {
 }
 
 //GAME_________________________________________________________________________________________
+
 function createGamePage() {
   let wrapper = document.getElementById('wrapper');
   let canvas = document.createElement('canvas');
   canvas.id = "mycanvas";
   wrapper.appendChild(canvas);
-  wrapper.appendChild(createScore())
+  wrapper.appendChild(createScore());
   wrapper.appendChild(createLives("lives"));
-  wrapper.appendChild(createButtonOK("Back", switchToMain, "score butBack"));
+  wrapper.appendChild(createButtonOK("Back to menu", switchToMain, "score but-back"));
 }
 
 function createScore() {

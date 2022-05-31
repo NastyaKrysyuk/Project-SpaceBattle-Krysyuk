@@ -1,6 +1,6 @@
-// import {game} from './game.js';
+import {game} from './game.js';
+
 game.character = {
-  game: game,
   moveX: 0,
   moveY: 0,
   fire: [],
@@ -33,7 +33,7 @@ game.character = {
     for (let i in this.fire) {
       this.fire[i].y += this.fire[i].dy;
       this.fire[i].x += this.fire[i].dx;
-      if (this.fire[i].y <= this.game.field.offsetY || this.fire[i].x <= this.game.field.offsetX || this.fire[i].x >= this.game.field.offsetX + this.game.sprites.cell.width * this.game.field.width) {
+      if (this.fire[i].y <= game.field.offsetY || this.fire[i].x <= game.field.offsetX || this.fire[i].x >= game.field.offsetX + game.sprites.cell.width * game.field.width) {
         this.fire.splice(i, 1)
       }
     }
@@ -66,9 +66,9 @@ game.character = {
 
   render() {
     this.fire.forEach((fire) => {
-      this.game.ctx.drawImage(this.game.sprites.shot, fire.x, fire.y, 20, 20);
+      game.ctx.drawImage(game.sprites.shot, fire.x, fire.y, 20, 20);
     });
-    this.game.ctx.drawImage(this.game.sprites[localStorage.getItem("character")], this.moveX, this.moveY, 50, 50);
-    this.game.ctx.drawImage(this.game.sprites.shield, 192 * Math.floor(this.animx), 192 * Math.floor(this.animy), 192, 192, this.moveX - 15, this.moveY - 10, 80, 80);
+    game.ctx.drawImage(game.sprites[localStorage.getItem("character")], this.moveX, this.moveY, 50, 50);
+    game.ctx.drawImage(game.sprites.shield, 192 * Math.floor(this.animx), 192 * Math.floor(this.animy), 192, 192, this.moveX - 15, this.moveY - 10, 80, 80);
   }
 }

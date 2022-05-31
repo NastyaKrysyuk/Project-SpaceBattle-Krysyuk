@@ -16,8 +16,6 @@ body {
 
 /*animation svg*/
 object {
-  /* width: 512px;
-  height: 350px; */
   animation: pulsing 2s infinite;
   transform: translateZ(0);
 }

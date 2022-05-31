@@ -1,6 +1,6 @@
-// import {game} from './game.js';
+import {game} from './game.js';
+
 game.field = {
-  game: game,
   height: 13,
   width: 16,
   offsetX: 0,
@@ -22,9 +22,9 @@ game.field = {
   },
 
   createCell(row, col) {
-    const cellSize = this.game.sprites.cell.width;
-    this.offsetX = (this.game.width / 2) - (cellSize * this.width / 2);
-    this.offsetY = (this.game.height / 2) - (cellSize * this.height / 2);
+    const cellSize = game.sprites.cell.width;
+    this.offsetX = (game.width / 2) - (cellSize * this.width / 2);
+    this.offsetY = (game.height / 2) - (cellSize * this.height / 2);
     return {
       row: row,
       col: col,
@@ -35,7 +35,7 @@ game.field = {
 
   createObject(typeObj, obj) {
     this.aster.push({
-      x: Math.floor(this.offsetX + Math.random() * ((this.offsetX + this.width * this.game.sprites.cell.width) - this.game.sprites.asteroid.width / 2 + 1 - this.offsetX)),
+      x: Math.floor(this.offsetX + Math.random() * ((this.offsetX + this.width * game.sprites.cell.width) - game.sprites.asteroid.width / 2  - this.offsetX)),
       y: this.offsetY,
       angle: 0,
       dxangle: Math.random() * 0.2 - 0.1,
@@ -63,7 +63,7 @@ game.field = {
       animy: 0
     });
     this.aster[objNum1].del = 1;
-    this.game.character.fire.splice(objNum2, 1);
+    game.character.fire.splice(objNum2, 1);
   },
 
   updateObject() {
@@ -81,48 +81,48 @@ game.field = {
           break;
       }
 
-      if (this.aster[i].y >= this.offsetY + this.height * this.game.sprites.cell.height - 50) {
-        if (this.aster[i].type === "asteroid" && !this.game.character.isProtected) {
+      if (this.aster[i].y >= this.offsetY + this.height * game.sprites.cell.height - 50) {
+        if (this.aster[i].type === "asteroid" && !game.character.isProtected) {
           //минус жизнь
           document.querySelector('.lives').firstChild.remove();
           //конец игры
           if (document.querySelector('.lives').childElementCount == 0) {
-            this.game.gameOver();
+            game.gameOver(true);
           }
         }
         this.aster.splice(i, 1);
       }
 
       //столкновение астероида + стенка 
-      if (this.aster[i].x <= this.offsetX || this.aster[i].x >= this.offsetX + this.game.sprites.cell.width * this.width - this.game.sprites.asteroid.width) {
+      if (this.aster[i].x <= this.offsetX || this.aster[i].x >= this.offsetX + game.sprites.cell.width * this.width - game.sprites.asteroid.width) {
         this.aster[i].dx = -this.aster[i].dx;
       }
 
-      for (var j in this.game.character.fire) {
-        if (this.collides(this.game.character.fire[j].x, this.game.character.fire[j].y, this.aster[i].x, this.aster[i].y, this.game.sprites.shot.height, this.game.sprites.shot.width, this.game.sprites.asteroid.height, this.game.sprites.asteroid.width)) {
+      for (var j in game.character.fire) {
+        if (this.collides(game.character.fire[j].x, game.character.fire[j].y, this.aster[i].x, this.aster[i].y, game.sprites.shot.height, game.sprites.shot.width, game.sprites.asteroid.height, game.sprites.asteroid.width)) {
 
           //столкновение астероид + пуля
           if (this.aster[i].type === "asteroid") {
-            this.game.asterExploded();
+            game.asterExploded();
             this.deleteObject(i, j);
 
             //столкновение жизнь + пуля
           } else if (this.aster[i].type === "bonus") {
             this.deleteObject(i, j);
             //добавляем жизнь
-            this.game.bonusExploded();
+            game.bonusExploded();
           }
           //столкновение щит + пуля
           else if (this.aster[i].type === "protection") {
             this.deleteObject(i, j);
-            this.game.character.isProtected = true;
+            game.character.isProtected = true;
             //анимация защиты
             this.protectInterval = setInterval(() => {
-              this.game.character.onProtect();
+              game.character.onProtect();
             }, 50);
             setTimeout(() => {
               clearInterval(this.protectInterval);
-              this.game.character.isProtected = false;
+              game.character.isProtected = false;
             }, 8000)
           }
         }
@@ -131,7 +131,7 @@ game.field = {
     }
 
     //Анимация взрывов
-    for (i in this.expl) {
+    for (var i in this.expl) {
       this.expl[i].animx = this.expl[i].animx + 5;
       if (this.expl[i].animx > 5) { this.expl[i].animy++; this.expl[i].animx = 0 }
       if (this.expl[i].animy > 7) this.expl.splice(i, 1);
@@ -140,28 +140,28 @@ game.field = {
 
   render() {
     this.cells.forEach((cell) => {
-      this.game.ctx.drawImage(this.game.sprites.cell, cell.x, cell.y);
+      game.ctx.drawImage(game.sprites.cell, cell.x, cell.y);
     });
 
     this.aster.forEach((aster) => {
       switch (aster.type) {
         case 'asteroid':
-          this.game.ctx.save();
-          this.game.ctx.translate(aster.x + 25, aster.y + 25);
-          this.game.ctx.rotate(aster.angle);
-          this.game.ctx.drawImage(this.game.sprites.asteroid, -25, -25, 30, 30);
-          this.game.ctx.restore();
+          game.ctx.save();
+          game.ctx.translate(aster.x + 25, aster.y + 25);
+          game.ctx.rotate(aster.angle);
+          game.ctx.drawImage(game.sprites.asteroid, -25, -25, 30, 30);
+          game.ctx.restore();
           break;
         case 'bonus':
-          this.game.ctx.drawImage(this.game.sprites.life, aster.x, aster.y, 20, 20);
+          game.ctx.drawImage(game.sprites.life, aster.x, aster.y, 20, 20);
           break;
         case 'protection':
-          this.game.ctx.drawImage(this.game.sprites.protection, aster.x, aster.y, 20, 20);
+          game.ctx.drawImage(game.sprites.protection, aster.x, aster.y, 20, 20);
           break;
       }
     });
     this.expl.forEach((expl) => {
-      this.game.ctx.drawImage(this.game.sprites.explosion, 128 * Math.floor(expl.animx), 128 * Math.floor(expl.animy), 128, 128, expl.x, expl.y, 30, 30);
+      game.ctx.drawImage(game.sprites.explosion, 128 * Math.floor(expl.animx), 128 * Math.floor(expl.animy), 128, 128, expl.x, expl.y, 30, 30);
     });
   }
 };
