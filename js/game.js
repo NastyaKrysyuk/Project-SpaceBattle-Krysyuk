@@ -1,4 +1,4 @@
-import { switchToMain } from './SPA.js';
+import { switchToMain } from './spa.js';
 
 export let game = {
   isStarted: false,
